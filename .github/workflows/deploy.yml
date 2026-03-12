@@ -4,11 +4,16 @@
 name: Deploy to GitHub Pages
 
 on:
-  # main 브랜치에 push 시 실행
+  # Runs on pushes targeting the default branch
   push:
-    branches: [main]
-  # 수동 실행 허용
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+  # Trigger build from Sanity Webhook
+  repository_dispatch:
+    types: [sanity-update]
 
 # GitHub Pages 배포 권한 설정
 permissions:
