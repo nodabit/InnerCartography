@@ -1,19 +1,27 @@
 ---
-// Search 페이지 레이아웃 임포트
 import Layout from '../layouts/Layout.astro';
-// 추후 이곳에서 모든 포스트/마크다운 글을 불러올 예정입니다.
-// 예: const allPosts = await Astro.glob('./**/*.md'); 
+import { sanityClient } from "sanity:client";
+
+// Fetch all posts for searching
+const allPosts = await sanityClient.fetch(`*[_type == "post"] | order(publishedAt desc) {
+  title,
+  classification,
+  "slug": slug.current,
+  publishedAt,
+  excerpt,
+  "category": category->title
+}`);
+
+const base = import.meta.env.BASE_URL;
 ---
 
-<!-- 전체 페이지 레이아웃 시작 -->
 <Layout title="Search">
-  <!-- 메인 컨텐츠 컨테이너 -->
   <div class="w-full min-h-screen flex flex-col items-center justify-start bg-white p-8 pt-24 pr-24">
     <div class="w-full max-w-3xl space-y-8">
       
-      <!-- 검색 헤더 구역 -->
+      <!-- Search Header -->
       <div class="flex flex-col gap-2 border-b border-neutral-200 pb-6">
-        <h1 class="text-[50px] text-neutral-400 font-aqua font-normal uppercase tracking-widest">
+        <h1 class="text-[50px] text-neutral-400 font-aqua font-normal uppercase tracking-widest leading-none">
           Search
         </h1>
         <p class="text-brand-800 font-roboto-slab font-normal tracking-widest text-[11px] uppercase">
@@ -21,74 +29,163 @@ import Layout from '../layouts/Layout.astro';
         </p>
       </div>
 
-      <!-- 검색 입력 폼 구역 -->
-      <div class="relative w-full">
-        <!-- 검색 아이콘 (검색창 좌측) -->
-        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </span>
-        
-        <!-- 실제 검색 입력창 -->
-        <input 
-          type="text" 
-          id="searchInput"
-          placeholder="Type to search..." 
-          class="w-full h-14 pl-12 pr-4 bg-neutral-50 border border-neutral-200 rounded-none focus:outline-none focus:border-brand-500 focus:bg-white transition-colors font-montserrat text-neutral-700 placeholder-neutral-400"
-        />
+      <!-- Search Input & Sort -->
+      <div class="flex flex-col md:flex-row gap-4 w-full">
+        <div class="relative flex-1">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </span>
+          <input 
+            type="text" 
+            id="searchInput"
+            placeholder="Type keyword..." 
+            class="w-full h-12 pl-12 pr-4 bg-neutral-50 border border-neutral-100 rounded-none focus:outline-none focus:border-brand-300 focus:bg-white transition-all font-montserrat text-sm text-neutral-600 placeholder-neutral-300 uppercase tracking-widest"
+          />
+        </div>
 
-        <!-- 정렬 옵션 선택 (검색창 우측, 필요한 경우) -->
-        <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-           <span class="text-[11px] text-neutral-400 font-roboto-slab font-thin uppercase tracking-wider">Sort by:</span>
-           <select id="sortSelect" class="bg-transparent text-[11px] text-brand-700 font-roboto-slab font-thin uppercase tracking-wider font-bold focus:outline-none cursor-pointer">
-              <!-- 날짜순 내림차순 (최신순) -->
+        <div class="flex items-center gap-3 px-4 h-12 border border-neutral-100 bg-neutral-50">
+           <span class="text-[10px] text-neutral-400 font-aqua uppercase tracking-widest">Sort:</span>
+           <select id="sortSelect" class="bg-transparent text-[10px] text-brand-800 font-aqua uppercase tracking-widest font-bold focus:outline-none cursor-pointer">
               <option value="desc">Newest</option>
-              <!-- 날짜순 오름차순 (오래된순) -->
               <option value="asc">Oldest</option>
            </select>
         </div>
       </div>
 
-      <!-- 검색 결과 표시 구역 -->
-      <div id="searchResults" class="flex flex-col gap-6 mt-8">
-        <!-- 검색 결과가 여기에 동적으로 들어갑니다 -->
-        <p class="text-neutral-400 text-sm font-montserrat italic">Enter a keyword to start searching.</p>
+      <!-- Search Results -->
+      <div id="searchResults" class="flex flex-col border-t border-neutral-50 mt-8">
+        <!-- Results injected here -->
+      </div>
+
+      <!-- Pagination -->
+      <div id="pagination-container" class="mt-12 flex justify-center items-center gap-4 opacity-0 transition-opacity duration-300">
+        <button id="prev-page" class="px-4 py-2 border border-neutral-100 text-[10px] font-aqua tracking-widest text-neutral-300 uppercase hover:border-brand-300 hover:text-brand-900 disabled:opacity-30">Prev</button>
+        <span class="text-[11px] font-aqua text-neutral-400 tracking-widest">
+          PAGE <span id="current-page-text">1</span> / <span id="total-pages-text">1</span>
+        </span>
+        <button id="next-page" class="px-4 py-2 border border-neutral-100 text-[10px] font-aqua tracking-widest text-neutral-300 uppercase hover:border-brand-300 hover:text-brand-900 disabled:opacity-30">Next</button>
       </div>
 
     </div>
   </div>
 </Layout>
 
-<!-- 클라이언트 사이드 스크립트 구역 (동적 검색 및 정렬 제어용) -->
-<script>
-  // 이 부분은 나중에 실제 블로그 글 데이터와 연결하여 검색 로직을 구현할 수 있도록 뼈대를 잡아두었습니다.
-  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
-  const sortSelect = document.getElementById('sortSelect') as HTMLSelectElement;
+<script define:vars={{ allPosts, base }}>
+  const searchInput = document.getElementById('searchInput');
+  const sortSelect = document.getElementById('sortSelect');
   const searchResults = document.getElementById('searchResults');
+  const paginationContainer = document.getElementById('pagination-container');
+  const prevBtn = document.getElementById('prev-page');
+  const nextBtn = document.getElementById('next-page');
+  const currentPageText = document.getElementById('current-page-text');
+  const totalPagesText = document.getElementById('total-pages-text');
 
-  // URL에서 검색어 읽기 (예: 다른 페이지에서 /search?q=keyword 로 들어왔을 때 확인)
+  let currentQuery = '';
+  let currentPage = 1;
+  let currentSort = 'desc';
+  const postsPerPage = 100;
+
+  function renderResults() {
+    // 1. Filter
+    let filtered = allPosts.filter(post => {
+      const q = currentQuery.toLowerCase();
+      return post.title.toLowerCase().includes(q) || 
+             (post.classification && post.classification.toLowerCase().includes(q)) ||
+             (post.excerpt && post.excerpt.toLowerCase().includes(q)) ||
+             post.category.toLowerCase().includes(q);
+    });
+
+    // 2. Sort
+    filtered.sort((a, b) => {
+      const dateA = new Date(a.publishedAt).getTime();
+      const dateB = new Date(b.publishedAt).getTime();
+      return currentSort === 'desc' ? dateB - dateA : dateA - dateB;
+    });
+
+    // 3. Pagination calculation
+    const totalVisible = filtered.length;
+    const totalPages = Math.ceil(totalVisible / postsPerPage) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    // Update Pagination UI
+    if (totalVisible > postsPerPage) {
+      paginationContainer.classList.remove('opacity-0', 'pointer-events-none');
+    } else {
+      paginationContainer.classList.add('opacity-0', 'pointer-events-none');
+    }
+    
+    currentPageText.innerText = currentPage;
+    totalPagesText.innerText = totalPages;
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages;
+
+    // 4. Slice for Page
+    const start = (currentPage - 1) * postsPerPage;
+    const end = start + postsPerPage;
+    const pageItems = filtered.slice(start, end);
+
+    // 5. Render
+    if (pageItems.length === 0) {
+      searchResults.innerHTML = `<p class="py-12 text-neutral-400 text-sm font-nanumsquare italic text-center">No results found for "${currentQuery}"</p>`;
+      return;
+    }
+
+    searchResults.innerHTML = pageItems.map(post => `
+      <a href="${base}posts/${post.slug}/" class="group flex items-center py-6 border-b border-neutral-50 hover:bg-neutral-50/50 transition-colors no-underline">
+        <div class="w-32 flex flex-col items-start gap-1">
+          <span class="text-[10px] text-neutral-300 font-aqua tracking-widest uppercase mb-1">
+            ${new Date(post.publishedAt).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/. /g, '.').replace('.','')}
+          </span>
+          <span class="text-[11px] text-brand-800 font-nanumsquare tracking-widest uppercase font-bold">
+            ${post.category}
+          </span>
+        </div>
+        <div class="flex-1">
+          <h2 class="text-xl text-neutral-500 font-nanumsquare font-normal uppercase tracking-tight group-hover:text-brand-900 transition-colors mb-2">
+            ${post.classification ? `<span class="text-brand-700 mr-2">[${post.classification}]</span>` : ''}
+            ${post.title}
+          </h2>
+          <p class="text-xs text-neutral-400 font-nanumsquare opacity-70 line-clamp-1">${post.excerpt || ''}</p>
+        </div>
+      </a>
+    `).join('');
+  }
+
+  // Event Listeners
+  searchInput.addEventListener('input', (e) => {
+    currentQuery = e.target.value;
+    currentPage = 1;
+    renderResults();
+  });
+
+  sortSelect.addEventListener('change', (e) => {
+    currentSort = e.target.value;
+    currentPage = 1;
+    renderResults();
+  });
+
+  prevBtn.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderResults();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    currentPage++;
+    renderResults();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Initial Load (if query in URL)
   const urlParams = new URLSearchParams(window.location.search);
-  const query = urlParams.get('q');
-  
-  if (query && searchInput) {
-    searchInput.value = query;
-    // Todo: 초기 검색 실행 로직을 여기에 구현합니다.
+  const initialQuery = urlParams.get('q');
+  if (initialQuery) {
+    searchInput.value = initialQuery;
+    currentQuery = initialQuery;
   }
-
-  // 검색어 입력 이벤트 처리
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      const value = (e.target as HTMLInputElement).value;
-      // Todo: 실제 글 목록에서 검색어가 포함된 항목만 필터링하고 화면에 렌더링하는 로직을 추가합니다.
-    });
-  }
-
-  // 정렬 순서 변경 이벤트 처리
-  if (sortSelect) {
-    sortSelect.addEventListener('change', (e) => {
-      const sortOrder = (e.target as HTMLSelectElement).value;
-      // Todo: 정렬 기준(Newest/Oldest)이 바뀌면 현재 검색 결과를 날짜순으로 재정렬하고 화면을 업데이트합니다.
-    });
-  }
+  renderResults();
 </script>

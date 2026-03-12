@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Sidebar from '../components/Sidebar.astro';
+import ScrollToTop from '../components/ScrollToTop.astro';
 
 interface Props {
 	title: string;
@@ -32,5 +33,7 @@ const { title } = Astro.props;
 		</main>
 		<!-- 우측 고정형 사이드바 -->
 		<Sidebar />
+		<!-- 하단 TOP 버튼 -->
+		<ScrollToTop />
 	</body>
 </html>
