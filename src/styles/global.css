@@ -1,0 +1,39 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@import url('https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@2.0/nanumsquare.css');
+
+@theme {
+    /* 
+       사용자 요청 새 컬러파레트:
+       #7396bf, #8fabcc, #abc0d8, #c7d5e5, #e3eaf2, 
+       #ffffff, #ebebeb, #d9d9d9, #adadad
+    */
+    --color-brand-900: #7396bf;
+    --color-brand-800: #8fabcc;
+    --color-brand-700: #abc0d8;
+    --color-brand-600: #c7d5e5;
+    --color-brand-500: #e3eaf2;
+
+    --color-neutral-100: #ffffff;
+    --color-neutral-200: #ebebeb;
+    --color-neutral-300: #d9d9d9;
+    --color-neutral-400: #adadad;
+
+    /* 새롭게 추가된 감성 & 가독성 폰트 시스템 */
+    --font-sans: "Pretendard", "Lato", system-ui, -apple-system, sans-serif;
+    --font-serif: "Playfair Display", Georgia, serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --font-nanum: "Nanum Gothic", sans-serif;
+    --font-nanumsquare: "NanumSquare", sans-serif;
+    --font-montserrat: "Montserrat", sans-serif;
+    --font-bodoni: "Bodoni Moda", serif;
+    --font-aqua: "Aqua Grotesque", sans-serif;
+    --font-roboto-slab: "Roboto Slab", serif;
+}
+
+@layer base {
+    body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}

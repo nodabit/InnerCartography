@@ -1,0 +1,216 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { sanityClient } from "sanity:client";
+
+const categoryName = "Languages";
+const query = `*[_type == "post" && category->title == "${categoryName}"] | order(publishedAt desc) {
+  title,
+  classification,
+  "slug": slug.current,
+  publishedAt,
+  excerpt,
+  "mainImage": mainImage.asset->url
+}`;
+const posts = await sanityClient.fetch(query);
+
+// Get unique classifications for the filter list
+const classifications = [...new Set(posts.map(p => p.classification).filter(Boolean))];
+---
+
+<Layout title={categoryName}>
+  <div class="w-full min-h-screen flex flex-row bg-white p-12 pt-24">
+    
+    <!-- LEFT SECTION: Header & Filters -->
+    <div class="w-[300px] flex flex-col items-center justify-start sticky top-24 h-[calc(100vh-144px)]">
+      <!-- Category Title & Subtitle (Left Aligned) -->
+      <div class="flex flex-col items-start text-left w-full mb-12 px-8">
+        <h1 class="text-[50px] text-neutral-400 font-aqua font-normal uppercase mb-2 tracking-widest leading-none">
+          {categoryName}
+        </h1>
+        <p class="text-brand-800 font-roboto-slab font-normal uppercase tracking-widest text-xs">
+          Explore the {categoryName.toLowerCase()}
+        </p>
+      </div>
+
+      <!-- Classifications List (다음카페 말머리 느낌) -->
+      <div class="flex flex-col items-center space-y-3 py-10 w-full border-y border-neutral-50/50 my-10">
+        <button class="classification-btn active text-brand-800 font-nanumsquare text-sm tracking-wide hover:text-brand-500 transition-colors" data-class="all">
+          ALL
+        </button>
+        {classifications.map(cls => (
+          <button class="classification-btn text-neutral-400 font-nanumsquare text-sm tracking-wide hover:text-brand-500 transition-colors" data-class={cls}>
+            {cls.toUpperCase()}
+          </button>
+        ))}
+      </div>
+
+      <!-- Search Bar (Bottom, Button Style) -->
+      <div class="mt-auto w-full pt-8 border-t border-neutral-50 relative">
+        <button 
+          id="local-search-btn" 
+          class="text-neutral-400 hover:text-brand-900 transition-colors text-[11px] font-aqua font-normal tracking-[0.2em] uppercase text-left w-full"
+        >
+          SEARCH
+        </button>
+        
+        <div id="local-search-container" class="absolute inset-0 bg-white opacity-0 pointer-events-none transition-opacity duration-300 flex items-center pr-2 border-b border-brand-300 focus-within:border-brand-600">
+          <input 
+            type="text" 
+            id="local-search"
+            placeholder="SEARCH..." 
+            class="w-full text-[11px] font-montserrat text-brand-900 bg-transparent focus:outline-none placeholder-brand-300/80 pb-[1px] uppercase tracking-wider"
+            autocomplete="off"
+          />
+          <svg class="w-3 h-3 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SECTION: Post List -->
+    <div class="flex-1 px-24 flex flex-col">
+      <!-- Sort Toggle -->
+      <div class="w-full flex justify-end mb-8">
+        <button id="sort-toggle" class="text-neutral-300 font-aqua text-xs tracking-widest hover:text-neutral-500 transition-colors flex items-center">
+          DATE <span id="sort-order" class="ml-2">↓</span>
+        </button>
+      </div>
+
+      <!-- Post List Area -->
+      <div id="posts-container" class="flex flex-col border-t border-neutral-50">
+        {posts.map(post => (
+          <article 
+            class="post-item group flex items-center justify-between py-6 border-b border-neutral-50 hover:bg-neutral-50/50 transition-colors px-4 cursor-pointer"
+            data-title={post.title.toLowerCase()}
+            data-class={post.classification || ""}
+            data-date={post.publishedAt}
+          >
+            <!-- Date & Class -->
+            <div class="w-32 pt-1 flex flex-col items-start gap-1">
+              <span class="text-[10px] text-neutral-300 font-aqua tracking-widest uppercase mb-1">
+                {new Date(post.publishedAt).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/. /g, '.').replace('.','')}
+              </span>
+              {post.classification && (
+                <span class="text-[11px] text-brand-800 font-nanumsquare tracking-widest uppercase font-bold">
+                  [{post.classification}]
+                </span>
+              )}
+            </div>
+
+            <!-- Title & Snippet -->
+            <div class="flex-1">
+              <h2 class="text-xl md:text-2xl text-neutral-500 font-nanumsquare font-normal uppercase tracking-tight group-hover:text-brand-900 transition-colors mb-3">
+                {post.title}
+              </h2>
+              {post.excerpt && (
+                <p class="text-sm text-neutral-400 font-nanumsquare leading-relaxed line-clamp-2 max-w-2xl opacity-70">
+                  {post.excerpt}
+                </p>
+              )}
+            </div>
+          </article>
+        ))}
+        {posts.length === 0 && (
+          <div class="py-24 flex flex-col items-center justify-center space-y-6">
+            <img 
+              src="/assets/images/default-post.png" 
+              alt="Empty Category" 
+              class="w-32 h-auto opacity-50 mx-auto group-hover:opacity-75 transition-opacity"
+            />
+            <div class="text-center text-neutral-300 font-roboto-slab tracking-widest italic uppercase">
+              No patterns found in this atlas
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  let currentSort = 'desc';
+  let currentFilter = 'all';
+  let currentSearch = '';
+
+  const searchInput = document.getElementById('local-search') as HTMLInputElement;
+  const searchBtn = document.getElementById('local-search-btn');
+  const searchContainer = document.getElementById('local-search-container');
+  const sortBtn = document.getElementById('sort-toggle');
+  const sortOrderText = document.getElementById('sort-order');
+  const container = document.getElementById('posts-container');
+  const filterBtns = document.querySelectorAll('.classification-btn');
+  const postItems = Array.from(document.querySelectorAll('.post-item'));
+
+  if (searchBtn && searchContainer && searchInput) {
+    searchBtn.addEventListener('click', () => {
+      searchBtn.style.opacity = '0';
+      searchBtn.style.pointerEvents = 'none';
+      searchContainer.style.opacity = '1';
+      searchContainer.style.pointerEvents = 'auto';
+      setTimeout(() => searchInput.focus(), 50);
+    });
+
+    searchInput.addEventListener('focusout', () => {
+      if (searchInput.value.trim() === '') {
+        searchBtn.style.opacity = '1';
+        searchBtn.style.pointerEvents = 'auto';
+        searchContainer.style.opacity = '0';
+        searchContainer.style.pointerEvents = 'none';
+      }
+    });
+  }
+
+  function updateDisplay() {
+    // 1. Filter & Search
+    let visibleItems = postItems.filter(item => {
+      const title = item.getAttribute('data-title') || "";
+      const classification = item.getAttribute('data-class') || "";
+      
+      const matchesFilter = currentFilter === 'all' || classification === currentFilter;
+      const matchesSearch = title.includes(currentSearch.toLowerCase()) || classification.toLowerCase().includes(currentSearch.toLowerCase());
+      
+      const isVisible = matchesFilter && matchesSearch;
+      item.style.display = isVisible ? 'flex' : 'none';
+      return isVisible;
+    });
+
+    // 2. Sort
+    visibleItems.sort((a, b) => {
+      const dateA = new Date(a.getAttribute('data-date')).getTime();
+      const dateB = new Date(b.getAttribute('data-date')).getTime();
+      return currentSort === 'desc' ? dateB - dateA : dateA - dateB;
+    });
+
+    // 3. Re-append in order
+    visibleItems.forEach(item => container.appendChild(item));
+  }
+
+  searchInput.addEventListener('input', (e) => {
+    currentSearch = (e.target as HTMLInputElement).value;
+    updateDisplay();
+  });
+
+  sortBtn.addEventListener('click', () => {
+    currentSort = currentSort === 'desc' ? 'asc' : 'desc';
+    sortOrderText.innerText = currentSort === 'desc' ? '↓' : '↑';
+    updateDisplay();
+  });
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active', 'text-brand-800'));
+      filterBtns.forEach(b => b.classList.add('text-neutral-400'));
+      
+      btn.classList.add('active', 'text-brand-800');
+      btn.classList.remove('text-neutral-400');
+      
+      currentFilter = btn.getAttribute('data-class');
+      updateDisplay();
+    });
+  });
+</script>
+
+<style>
+  .classification-btn.active {
+    font-weight: 500;
+  }
+</style>

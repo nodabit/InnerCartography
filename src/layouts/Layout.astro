@@ -1,0 +1,36 @@
+---
+import '../styles/global.css';
+import Sidebar from '../components/Sidebar.astro';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Inner Cartography: An Atlas of the Mind" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+
+		<!-- Typography: Pretendard (가독성), Playfair Display (Serif/감성), Lato (Sans-serif/특수) -->
+		<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400&family=Nanum+Gothic:wght@400;700;800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Roboto+Slab:wght@100;400&display=swap" rel="stylesheet">
+		<link href="https://fonts.cdnfonts.com/css/aqua-grotesque" rel="stylesheet">
+	</head>
+	<body class="bg-white min-h-screen flex text-neutral-400">
+		<main class="flex-1 w-full relative">
+			<slot />
+		</main>
+		<!-- 우측 고정형 사이드바 -->
+		<Sidebar />
+	</body>
+</html>

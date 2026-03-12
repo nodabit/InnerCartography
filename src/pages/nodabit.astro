@@ -1,0 +1,76 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const categoryName = "Nodabit";
+---
+
+<Layout title={categoryName}>
+  <div class="w-full min-h-screen flex items-center justify-center bg-white p-12 pr-24">
+    <!-- CENTERED CONTENT -->
+    <div class="w-full flex flex-col items-center justify-center">
+       <div class="flex flex-col items-center space-y-12">
+          
+          <!-- Interactive Image Container -->
+          <div id="interactive-container" class="w-[70%] max-w-2xl relative group flex items-center justify-center">
+             <div class="floating-orbit absolute -inset-8 border border-brand-500/10 rounded-full animate-[spin_20s_linear_infinite] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+             <!-- wrapper that moves in opposite direction -->
+             <div id="interactive-wrapper" class="w-full group-hover:drop-shadow-[0_40px_60px_rgba(115,150,191,0.3)] transition-all duration-100 ease-out">
+                <img 
+                  src="/assets/images/nodabit-visual.png" 
+                  alt="Nodabit Visual" 
+                  class="w-full h-auto object-contain transition-transform duration-300 ease-out group-hover:scale-105"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                />
+                <!-- Fallback if no image -->
+                <div class="bg-brand-500/10 p-20 flex items-center justify-center hidden border border-brand-200">
+                   <span class="text-brand-800 text-[10px] tracking-[0.3em] font-aqua uppercase">Add nodabit-visual.png</span>
+                </div>
+             </div>
+          </div>
+
+          <!-- Main Title -->
+          <div class="text-center space-y-2">
+            <h1 class="text-[50px] text-neutral-400 font-aqua font-normal uppercase tracking-widest leading-none">
+              {categoryName}
+            </h1>
+          </div>
+       </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Parallax interaction script
+  const container = document.getElementById('interactive-container');
+  const wrapper = document.getElementById('interactive-wrapper');
+
+  if (container && wrapper) {
+    container.addEventListener('mousemove', (e) => {
+      // Get the container's center coordinates
+      const rect = container.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      // Calculate how far the mouse is from the center (-1 to 1)
+      const moveX = (e.clientX - centerX) / (rect.width / 2);
+      const moveY = (e.clientY - centerY) / (rect.height / 2);
+      
+      // Move wrapper in opposite direction (max 10px translate)
+      const translateX = -moveX * 10;
+      const translateY = -moveY * 10;
+      
+      wrapper.style.transform = `translate(${translateX}px, ${translateY}px)`;
+    });
+
+    container.addEventListener('mouseleave', () => {
+      // Return to original stable position and make transition smooth
+      wrapper.style.transition = 'transform 0.5s ease-out, filter 0.5s'; 
+      wrapper.style.transform = 'translate(0px, 0px)';
+    });
+
+    container.addEventListener('mouseenter', () => {
+      // Faster, snappier transition when mouse comes back inside
+      wrapper.style.transition = 'transform 0.1s ease-out, filter 0.5s';
+    });
+  }
+</script>

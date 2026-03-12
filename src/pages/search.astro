@@ -1,0 +1,94 @@
+---
+// Search 페이지 레이아웃 임포트
+import Layout from '../layouts/Layout.astro';
+// 추후 이곳에서 모든 포스트/마크다운 글을 불러올 예정입니다.
+// 예: const allPosts = await Astro.glob('./**/*.md'); 
+---
+
+<!-- 전체 페이지 레이아웃 시작 -->
+<Layout title="Search">
+  <!-- 메인 컨텐츠 컨테이너 -->
+  <div class="w-full min-h-screen flex flex-col items-center justify-start bg-white p-8 pt-24 pr-24">
+    <div class="w-full max-w-3xl space-y-8">
+      
+      <!-- 검색 헤더 구역 -->
+      <div class="flex flex-col gap-2 border-b border-neutral-200 pb-6">
+        <h1 class="text-[50px] text-neutral-400 font-aqua font-normal uppercase tracking-widest">
+          Search
+        </h1>
+        <p class="text-brand-800 font-roboto-slab font-normal tracking-widest text-[11px] uppercase">
+          Find contents by keyword
+        </p>
+      </div>
+
+      <!-- 검색 입력 폼 구역 -->
+      <div class="relative w-full">
+        <!-- 검색 아이콘 (검색창 좌측) -->
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </span>
+        
+        <!-- 실제 검색 입력창 -->
+        <input 
+          type="text" 
+          id="searchInput"
+          placeholder="Type to search..." 
+          class="w-full h-14 pl-12 pr-4 bg-neutral-50 border border-neutral-200 rounded-none focus:outline-none focus:border-brand-500 focus:bg-white transition-colors font-montserrat text-neutral-700 placeholder-neutral-400"
+        />
+
+        <!-- 정렬 옵션 선택 (검색창 우측, 필요한 경우) -->
+        <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+           <span class="text-[11px] text-neutral-400 font-roboto-slab font-thin uppercase tracking-wider">Sort by:</span>
+           <select id="sortSelect" class="bg-transparent text-[11px] text-brand-700 font-roboto-slab font-thin uppercase tracking-wider font-bold focus:outline-none cursor-pointer">
+              <!-- 날짜순 내림차순 (최신순) -->
+              <option value="desc">Newest</option>
+              <!-- 날짜순 오름차순 (오래된순) -->
+              <option value="asc">Oldest</option>
+           </select>
+        </div>
+      </div>
+
+      <!-- 검색 결과 표시 구역 -->
+      <div id="searchResults" class="flex flex-col gap-6 mt-8">
+        <!-- 검색 결과가 여기에 동적으로 들어갑니다 -->
+        <p class="text-neutral-400 text-sm font-montserrat italic">Enter a keyword to start searching.</p>
+      </div>
+
+    </div>
+  </div>
+</Layout>
+
+<!-- 클라이언트 사이드 스크립트 구역 (동적 검색 및 정렬 제어용) -->
+<script>
+  // 이 부분은 나중에 실제 블로그 글 데이터와 연결하여 검색 로직을 구현할 수 있도록 뼈대를 잡아두었습니다.
+  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+  const sortSelect = document.getElementById('sortSelect') as HTMLSelectElement;
+  const searchResults = document.getElementById('searchResults');
+
+  // URL에서 검색어 읽기 (예: 다른 페이지에서 /search?q=keyword 로 들어왔을 때 확인)
+  const urlParams = new URLSearchParams(window.location.search);
+  const query = urlParams.get('q');
+  
+  if (query && searchInput) {
+    searchInput.value = query;
+    // Todo: 초기 검색 실행 로직을 여기에 구현합니다.
+  }
+
+  // 검색어 입력 이벤트 처리
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const value = (e.target as HTMLInputElement).value;
+      // Todo: 실제 글 목록에서 검색어가 포함된 항목만 필터링하고 화면에 렌더링하는 로직을 추가합니다.
+    });
+  }
+
+  // 정렬 순서 변경 이벤트 처리
+  if (sortSelect) {
+    sortSelect.addEventListener('change', (e) => {
+      const sortOrder = (e.target as HTMLSelectElement).value;
+      // Todo: 정렬 기준(Newest/Oldest)이 바뀌면 현재 검색 결과를 날짜순으로 재정렬하고 화면을 업데이트합니다.
+    });
+  }
+</script>
