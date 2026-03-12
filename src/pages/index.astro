@@ -9,7 +9,7 @@ import Layout from '../layouts/Layout.astro';
 			
 			<div class="w-1/2 max-w-[336px] flex items-center justify-center relative group">
 				<img 
-					src="/assets/images/main-visual.png" 
+					src={`${import.meta.env.BASE_URL}assets/images/main-visual.png`} 
 					alt="Main Illustration" 
 					class="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
 					onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"

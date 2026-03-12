@@ -16,7 +16,7 @@ const categoryName = "Nodabit";
              <!-- wrapper that moves in opposite direction -->
              <div id="interactive-wrapper" class="w-full group-hover:drop-shadow-[0_40px_60px_rgba(115,150,191,0.3)] transition-all duration-100 ease-out">
                 <img 
-                  src="/assets/images/nodabit-visual.png" 
+                  src={`${import.meta.env.BASE_URL}assets/images/nodabit-visual.png`} 
                   alt="Nodabit Visual" 
                   class="w-full h-auto object-contain transition-transform duration-300 ease-out group-hover:scale-105"
                   onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"

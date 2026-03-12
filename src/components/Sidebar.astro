@@ -1,12 +1,14 @@
 ---
+const base = import.meta.env.BASE_URL;
+
 const categories = [
-  { name: 'Journeys', path: '/journeys' },
-  { name: 'Games', path: '/games' },
-  { name: 'Books', path: '/books' },
-  { name: 'Movies', path: '/movies' },
-  { name: 'Handiworks', path: '/handiworks' },
-  { name: 'Languages', path: '/languages' },
-  { name: 'Creations', path: '/creations' },
+  { name: 'Journeys', path: `${base}journeys/` },
+  { name: 'Games', path: `${base}games/` },
+  { name: 'Books', path: `${base}books/` },
+  { name: 'Movies', path: `${base}movies/` },
+  { name: 'Handiworks', path: `${base}handiworks/` },
+  { name: 'Languages', path: `${base}languages/` },
+  { name: 'Creations', path: `${base}creations/` },
 ];
 ---
 
@@ -24,7 +26,7 @@ const categories = [
     
     <!-- 최상단 Home -->
     <div class="mb-14 text-center w-full">
-      <a href="/" class="text-brand-900 text-[15px] md:text-base hover:text-brand-800 transition-colors tracking-[0.15em] font-aqua font-normal uppercase">
+      <a href={base} class="text-brand-900 text-[15px] md:text-base hover:text-brand-800 transition-colors tracking-[0.15em] font-aqua font-normal uppercase">
         Home
       </a>
     </div>
@@ -43,10 +45,10 @@ const categories = [
 
     <!-- 하단 특수 메뉴 -->
     <div class="mt-12 flex flex-col gap-5 pt-8 border-t border-brand-500/50 pl-2">
-      <a href="/nodabit" class="text-brand-700 hover:text-brand-900 transition-colors text-[11px] font-aqua font-normal tracking-[0.2em] uppercase">
+      <a href={`${base}nodabit/`} class="text-brand-700 hover:text-brand-900 transition-colors text-[11px] font-aqua font-normal tracking-[0.2em] uppercase">
         NODABIT
       </a>
-      <a href="/downloads" class="text-brand-700 hover:text-brand-900 transition-colors text-[11px] font-aqua font-normal tracking-[0.2em] uppercase">
+      <a href={`${base}downloads/`} class="text-brand-700 hover:text-brand-900 transition-colors text-[11px] font-aqua font-normal tracking-[0.2em] uppercase">
         DOWNLOADS
       </a>
       <!-- SEARCH 토글 영역 -->
@@ -60,7 +62,7 @@ const categories = [
         
         <form 
           id="sidebarSearchForm" 
-          action="/search" 
+          action={`${base}search/`} 
           method="get" 
           class="absolute inset-0 z-20 flex items-center bg-white opacity-0 pointer-events-none transition-opacity duration-300 pr-2 border-b border-brand-300 focus-within:border-brand-600"
         >
