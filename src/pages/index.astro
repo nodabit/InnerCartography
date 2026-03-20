@@ -3,11 +3,11 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Inner Cartography">
-	<div class="w-full min-h-screen flex items-center justify-center bg-white p-8 pr-24">
+	<div class="w-full min-h-screen flex items-center justify-center bg-white p-4 lg:p-8 lg:pr-24">
 		<!-- 메인 일러스트레이터 / Null 텍스트 영역 -->
-		<div class="max-w-4xl w-full flex flex-col items-center justify-center text-center space-y-12">
+		<div class="max-w-4xl w-full flex flex-col items-center justify-center text-center space-y-8 lg:space-y-12">
 			
-			<div class="w-1/2 max-w-[336px] flex items-center justify-center relative group">
+			<div class="w-3/4 lg:w-1/2 max-w-[336px] flex items-center justify-center relative group">
 				<img 
 					src={`${import.meta.env.BASE_URL}assets/images/main-visual.png`} 
 					alt="Main Illustration" 
@@ -21,10 +21,10 @@ import Layout from '../layouts/Layout.astro';
 			</div>
 			
 			<div class="space-y-3">
-				<h1 class="text-[50px] text-neutral-400 font-aqua font-normal opacity-100 uppercase tracking-widest">
+				<h1 class="text-3xl lg:text-[50px] text-neutral-400 font-aqua font-normal opacity-100 uppercase tracking-widest">
 					Inner Cartography
 				</h1>
-				<p class="text-brand-800 max-w-xl mx-auto leading-relaxed text-[20px] font-roboto-slab font-normal uppercase opacity-100 tracking-[0.2em]">
+				<p class="text-brand-800 max-w-xl mx-auto leading-relaxed text-sm lg:text-[20px] font-roboto-slab font-normal uppercase opacity-100 tracking-[0.2em]">
 					An Atlas of the Mind
 				</p>
 			</div>

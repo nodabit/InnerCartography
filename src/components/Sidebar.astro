@@ -12,17 +12,44 @@ const categories = [
 ];
 ---
 
-<aside class="fixed right-0 top-0 h-screen w-24 hover:w-64 bg-brand-800 hover:bg-white border-l border-neutral-200 transition-all duration-500 z-50 overflow-hidden flex flex-col shadow-sm group">
+<!-- ========== 모바일 햄버거 버튼 (lg 미만에서만 표시) ========== -->
+<button 
+  id="mobileMenuBtn"
+  class="fixed top-6 right-6 z-[70] flex flex-col items-center justify-center w-10 h-10 lg:hidden"
+  aria-label="Open menu"
+>
+  <!-- 햄버거 아이콘 3줄 -->
+  <span id="hamburgerLine1" class="block w-6 h-[1.5px] bg-neutral-400 transition-all duration-300 mb-[5px]"></span>
+  <span id="hamburgerLine2" class="block w-6 h-[1.5px] bg-neutral-400 transition-all duration-300 mb-[5px]"></span>
+  <span id="hamburgerLine3" class="block w-6 h-[1.5px] bg-neutral-400 transition-all duration-300"></span>
+</button>
+
+<!-- ========== 모바일 오버레이 배경 (메뉴 열릴 때 어두운 배경) ========== -->
+<div 
+  id="mobileOverlay" 
+  class="fixed inset-0 bg-black/30 z-[49] opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"
+></div>
+
+<!-- ========== 사이드바 (데스크탑: 기존 그대로 / 모바일: 슬라이드 메뉴) ========== -->
+<aside 
+  id="sidebarAside"
+  class="
+    fixed right-0 top-0 h-screen z-50 overflow-hidden flex flex-col shadow-sm
+    transition-all duration-500
+    w-64 translate-x-full bg-white border-l border-neutral-200
+    lg:w-24 lg:hover:w-64 lg:translate-x-0 lg:bg-brand-800 lg:hover:bg-white lg:group
+  "
+>
   
-  <!-- 닫혀있을 때 보이는 영역: 세로로 "Index" 표기 -->
-  <div class="absolute inset-0 w-24 h-full flex items-center justify-center opacity-100 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none">
+  <!-- 닫혀있을 때 보이는 영역: 세로로 "Index" 표기 (데스크탑 전용) -->
+  <div class="absolute inset-0 w-24 h-full items-center justify-center opacity-100 pointer-events-none hidden lg:flex sidebar-closed-label">
     <span class="text-white font-aqua font-normal -rotate-90 whitespace-nowrap uppercase text-[18px] opacity-100 tracking-normal">
       INDEX
     </span>
   </div>
 
-  <!-- 호버 시 보이는 컨텐츠 (확장) -->
-  <div class="p-8 flex flex-col h-full w-64 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-4 group-hover:translate-x-0">
+  <!-- 호버/열림 시 보이는 컨텐츠 -->
+  <div class="p-8 flex flex-col h-full w-64 transition-all duration-500 sidebar-open-content">
     
     <!-- 최상단 Home -->
     <div class="mb-14 text-center w-full">
@@ -93,8 +120,58 @@ const categories = [
   
 </aside>
 
-<!-- 사이드바 검색 인터랙션 스크립트 -->
+<!-- ========== 사이드바 + 모바일 메뉴 인터랙션 스크립트 ========== -->
 <script>
+  // --- 모바일 햄버거 메뉴 토글 ---
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileOverlay = document.getElementById('mobileOverlay');
+  const sidebarAside = document.getElementById('sidebarAside');
+  const line1 = document.getElementById('hamburgerLine1');
+  const line2 = document.getElementById('hamburgerLine2');
+  const line3 = document.getElementById('hamburgerLine3');
+
+  let menuOpen = false;
+
+  function openMenu() {
+    menuOpen = true;
+    // 사이드바 슬라이드 인
+    sidebarAside?.classList.remove('translate-x-full');
+    sidebarAside?.classList.add('translate-x-0');
+    // 오버레이 표시
+    mobileOverlay?.classList.remove('opacity-0', 'pointer-events-none');
+    mobileOverlay?.classList.add('opacity-100', 'pointer-events-auto');
+    // 햄버거 → X 애니메이션
+    if (line1 && line2 && line3) {
+      line1.style.transform = 'translateY(6.5px) rotate(45deg)';
+      line2.style.opacity = '0';
+      line3.style.transform = 'translateY(-6.5px) rotate(-45deg)';
+    }
+  }
+
+  function closeMenu() {
+    menuOpen = false;
+    // 사이드바 슬라이드 아웃
+    sidebarAside?.classList.add('translate-x-full');
+    sidebarAside?.classList.remove('translate-x-0');
+    // 오버레이 숨기기
+    mobileOverlay?.classList.add('opacity-0', 'pointer-events-none');
+    mobileOverlay?.classList.remove('opacity-100', 'pointer-events-auto');
+    // X → 햄버거 애니메이션
+    if (line1 && line2 && line3) {
+      line1.style.transform = '';
+      line2.style.opacity = '1';
+      line3.style.transform = '';
+    }
+  }
+
+  mobileMenuBtn?.addEventListener('click', () => {
+    menuOpen ? closeMenu() : openMenu();
+  });
+
+  // 오버레이 클릭 시 메뉴 닫기
+  mobileOverlay?.addEventListener('click', closeMenu);
+
+  // --- 사이드바 검색 인터랙션 (기존 유지) ---
   const searchBtn = document.getElementById('sidebarSearchBtn');
   const searchForm = document.getElementById('sidebarSearchForm');
   const searchInput = document.getElementById('sidebarSearchInput') as HTMLInputElement;
@@ -117,8 +194,6 @@ const categories = [
 
     // 검색창이나 버튼 외부로 포커스가 빠져나갔고, 입력된 내용이 없을 때 원래 상태로 닫기
     searchForm.addEventListener('focusout', (e) => {
-      // e.relatedTarget은 새로 포커스를 받은 요소를 나타냅니다.
-      // 새로 포커스된 요소가 폼 내부에 포함되어 있지 않다면 외부로 나간 것을 의미합니다.
       if (!searchForm.contains(e.relatedTarget as Node) && searchInput.value.trim() === '') {
         searchBtn.style.opacity = '1';
         searchBtn.style.pointerEvents = 'auto';
@@ -129,3 +204,32 @@ const categories = [
     });
   }
 </script>
+
+<!-- ========== 데스크탑 사이드바 hover 시 INDEX 텍스트/콘텐츠 전환 (CSS) ========== -->
+<style>
+  /* 데스크탑(lg 이상)에서만 hover 기반 INDEX/콘텐츠 전환 */
+  @media (min-width: 1024px) {
+    #sidebarAside .sidebar-open-content {
+      opacity: 0;
+      transform: translateX(1rem);
+    }
+    #sidebarAside:hover .sidebar-open-content {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    #sidebarAside:hover .sidebar-closed-label {
+      opacity: 0;
+    }
+  }
+
+  /* 모바일에서는 항상 콘텐츠 표시, INDEX 라벨 숨김 */
+  @media (max-width: 1023px) {
+    #sidebarAside .sidebar-open-content {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    #sidebarAside .sidebar-closed-label {
+      display: none;
+    }
+  }
+</style>
