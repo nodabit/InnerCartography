@@ -52,6 +52,33 @@ const formattedDate = new Date(post.publishedAt)
   .replace('.', '');
 
 const base = import.meta.env.BASE_URL;
+
+const components = {
+  type: {
+    image: ({ node }) => {
+      const url = urlFor(node).url();
+      return {
+        component: 'div',
+        props: { class: 'my-12 lg:my-20 flex flex-col items-center' },
+        children: [
+          {
+            component: 'img',
+            props: {
+              src: url,
+              alt: node.alt || '',
+              class: 'max-w-full md:max-w-[85%] h-auto shadow-sm rounded-sm'
+            }
+          },
+          node.caption && {
+            component: 'p',
+            props: { class: 'text-sm text-neutral-400 mt-6 lg:mt-8 italic font-light font-nanumsquare max-w-2xl text-center px-4' },
+            children: [node.caption]
+          }
+        ]
+      };
+    }
+  }
+};
 ---
 
 <Layout title={post.title}>
@@ -100,7 +127,7 @@ const base = import.meta.env.BASE_URL;
       prose-img:rounded-none prose-img:shadow-sm
       prose-a:text-brand-800 prose-a:no-underline hover:prose-a:underline
       max-w-3xl">
-      <PortableText value={post.body} />
+      <PortableText value={post.body} components={components} />
     </article>
 
     <!-- Post Footer: Prev / Next -->
@@ -158,5 +185,6 @@ const base = import.meta.env.BASE_URL;
   }
   .prose p {
     margin-bottom: 2rem;
+    white-space: pre-wrap;
   }
 </style>
