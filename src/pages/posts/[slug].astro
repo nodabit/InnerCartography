@@ -66,12 +66,12 @@ const components = {
             props: {
               src: url,
               alt: node.alt || '',
-              class: 'max-w-full md:max-w-[85%] h-auto shadow-sm rounded-sm'
+              class: 'max-w-full md:max-w-[65%] h-auto shadow-sm rounded-sm hover:scale-[1.02] transition-transform duration-500'
             }
           },
           node.caption && {
             component: 'p',
-            props: { class: 'text-sm text-neutral-400 mt-6 lg:mt-8 italic font-light font-nanumsquare max-w-2xl text-center px-4' },
+            props: { class: 'text-[11px] text-neutral-400 mt-4 lg:mt-6 italic font-light font-nanumsquare max-w-xl text-center px-4 leading-relaxed' },
             children: [node.caption]
           }
         ]
@@ -83,8 +83,21 @@ const components = {
 
 <Layout title={post.title}>
   <div class="w-full min-h-screen bg-white pb-32">
+    <!-- Main Visual Image (Banner Style) -->
+    {post.mainImage && (
+      <div class="w-full mb-12 lg:mb-20">
+        <div class="w-full max-h-[50vh] lg:max-h-[60vh] overflow-hidden grayscale-[0.2] hover:grayscale-0 transition-all duration-1000">
+          <img 
+            src={post.mainImage} 
+            alt={post.title} 
+            class="w-full h-full object-cover aspect-[21/9] lg:aspect-[25/9]"
+          />
+        </div>
+      </div>
+    )}
+
     <!-- Post Header -->
-    <header class="w-full pt-20 lg:pt-32 pb-10 lg:pb-16 px-4 lg:px-8 flex flex-col items-center text-center max-w-4xl mx-auto">
+    <header class="w-full pt-10 lg:pt-16 pb-10 lg:pb-16 px-4 lg:px-8 flex flex-col items-center text-center max-w-4xl mx-auto">
       <div class="flex items-center gap-3 mb-6">
          <span class="text-[10px] text-neutral-300 font-aqua tracking-[0.4em] uppercase">
           {formattedDate}
@@ -107,18 +120,7 @@ const components = {
       )}
     </header>
 
-    <!-- Main Visual Image -->
-    {post.mainImage && (
-      <div class="w-full max-w-6xl mx-auto px-4 lg:px-8 mb-12 lg:mb-20">
-        <div class="overflow-hidden grayscale-[0.2] hover:grayscale-0 transition-all duration-1000">
-          <img 
-            src={post.mainImage} 
-            alt={post.title} 
-            class="w-full h-auto"
-          />
-        </div>
-      </div>
-    )}
+
 
     <!-- Post Body -->
     <article class="prose prose-neutral prose-lg mx-auto px-4 lg:px-8 font-nanumsquare text-neutral-500 leading-loose
@@ -178,10 +180,18 @@ const components = {
 <style is:global>
   /* Portable Text custom styles */
   .prose img {
-    margin-top: 3rem;
-    margin-bottom: 3rem;
-    width: 100%;
+    margin-top: 3.5rem;
+    margin-bottom: 3.5rem;
+    max-width: 65%;
+    margin-left: auto;
+    margin-right: auto;
     height: auto;
+    display: block;
+  }
+  @media (max-width: 768px) {
+    .prose img {
+      max-width: 95%;
+    }
   }
   .prose p {
     margin-bottom: 2rem;
