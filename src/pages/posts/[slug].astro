@@ -68,7 +68,7 @@ const base = import.meta.env.BASE_URL;
         </span>
       </div>
 
-      <h1 class="text-2xl lg:text-5xl text-neutral-600 font-nanumsquare font-light leading-tight mb-6 lg:mb-8 tracking-tight uppercase">
+      <h1 class="text-2xl lg:text-5xl text-neutral-600 font-nanumsquare font-light leading-tight mb-6 lg:mb-8 tracking-tight uppercase break-keep text-balance">
         {post.classification && <span class="text-brand-700 mr-2">[{post.classification}]</span>}
         {post.title}
       </h1>
@@ -83,11 +83,11 @@ const base = import.meta.env.BASE_URL;
     <!-- Main Visual Image -->
     {post.mainImage && (
       <div class="w-full max-w-6xl mx-auto px-4 lg:px-8 mb-12 lg:mb-20">
-        <div class="aspect-[16/9] lg:aspect-[21/9] overflow-hidden grayscale-[0.2] hover:grayscale-0 transition-all duration-1000">
+        <div class="overflow-hidden grayscale-[0.2] hover:grayscale-0 transition-all duration-1000">
           <img 
             src={post.mainImage} 
             alt={post.title} 
-            class="w-full h-full object-cover"
+            class="w-full h-auto"
           />
         </div>
       </div>
@@ -96,7 +96,7 @@ const base = import.meta.env.BASE_URL;
     <!-- Post Body -->
     <article class="prose prose-neutral prose-lg mx-auto px-4 lg:px-8 font-nanumsquare text-neutral-500 leading-loose
       prose-headings:font-nanumsquare prose-headings:font-normal prose-headings:text-neutral-600
-      prose-p:opacity-90 prose-p:mb-8
+      prose-p:opacity-90 prose-p:mb-8 prose-p:whitespace-pre-wrap
       prose-img:rounded-none prose-img:shadow-sm
       prose-a:text-brand-800 prose-a:no-underline hover:prose-a:underline
       max-w-3xl">
@@ -154,6 +154,7 @@ const base = import.meta.env.BASE_URL;
     margin-top: 3rem;
     margin-bottom: 3rem;
     width: 100%;
+    height: auto;
   }
   .prose p {
     margin-bottom: 2rem;

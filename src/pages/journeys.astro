@@ -26,7 +26,7 @@ const classifications = [...new Set(posts.map(p => p.classification).filter(Bool
     <!-- LEFT SECTION: Header & Filters -->
     <div class="w-full lg:w-[300px] flex flex-col items-center justify-start lg:sticky lg:top-24 lg:h-[calc(100vh-144px)]">
       <!-- Category Title & Subtitle (Left Aligned) -->
-      <div class="flex flex-col items-start text-left w-full mb-12 px-8">
+      <div class="flex flex-col items-start text-left w-full mb-4 lg:mb-12 px-8">
         <h1 class="text-3xl lg:text-[50px] text-neutral-400 font-aqua font-normal uppercase mb-2 tracking-widest leading-none">
           {categoryName}
         </h1>
@@ -36,7 +36,7 @@ const classifications = [...new Set(posts.map(p => p.classification).filter(Bool
       </div>
 
       <!-- Classifications List (다음카페 말머리 느낌) -->
-      <div class="flex flex-row flex-wrap justify-center gap-3 lg:flex-col lg:items-center lg:space-y-3 lg:gap-0 py-6 lg:py-10 w-full border-y border-neutral-50/50 my-6 lg:my-10">
+      <div class="flex flex-row flex-wrap justify-center gap-2 lg:flex-col lg:items-center lg:space-y-3 lg:gap-0 py-3 lg:py-10 w-full border-y border-neutral-50/50 my-2 lg:my-10">
         <button class="classification-btn active text-brand-800 font-nanumsquare text-sm tracking-wide hover:text-brand-500 transition-colors" data-class="all">
           ALL
         </button>
@@ -47,32 +47,39 @@ const classifications = [...new Set(posts.map(p => p.classification).filter(Bool
         ))}
       </div>
 
-      <!-- Search Bar (Bottom, Button Style) -->
-      <div class="mt-auto w-full pt-8 border-t border-neutral-50 relative">
-        <button 
-          id="local-search-btn" 
-          class="text-neutral-400 hover:text-brand-900 transition-colors text-[11px] font-aqua font-normal tracking-[0.2em] uppercase text-left w-full"
-        >
-          SEARCH
-        </button>
-        
-        <div id="local-search-container" class="absolute inset-0 bg-white opacity-0 pointer-events-none transition-opacity duration-300 flex items-center pr-2 border-b border-brand-300 focus-within:border-brand-600">
-          <input 
-            type="text" 
-            id="local-search"
-            placeholder="SEARCH..." 
-            class="w-full text-[11px] font-montserrat text-brand-900 bg-transparent focus:outline-none placeholder-brand-300/80 pb-[1px] uppercase tracking-wider"
-            autocomplete="off"
-          />
-          <svg class="w-3 h-3 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+      <!-- Search Bar + Sort (모바일: 한 줄 배치 / 데스크탑: 기존 위치) -->
+      <div class="w-full pt-4 lg:pt-8 border-t border-neutral-50 flex items-center justify-between lg:block">
+        <!-- SEARCH 영역 -->
+        <div class="relative flex-1 lg:w-full">
+          <button 
+            id="local-search-btn" 
+            class="text-neutral-400 hover:text-brand-900 transition-colors text-[11px] font-aqua font-normal tracking-[0.2em] uppercase text-left"
+          >
+            SEARCH
+          </button>
+          
+          <div id="local-search-container" class="absolute inset-0 bg-white opacity-0 pointer-events-none transition-opacity duration-300 flex items-center pr-2 border-b border-brand-300 focus-within:border-brand-600">
+            <input 
+              type="text" 
+              id="local-search"
+              placeholder="SEARCH..." 
+              class="w-full text-[11px] font-montserrat text-brand-900 bg-transparent focus:outline-none placeholder-brand-300/80 pb-[1px] uppercase tracking-wider"
+              autocomplete="off"
+            />
+            <svg class="w-3 h-3 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
         </div>
+        <!-- DATE 정렬 버튼 (모바일에서만 여기 표시) -->
+        <button id="sort-toggle-mobile" class="text-neutral-300 font-aqua text-xs tracking-widest hover:text-neutral-500 transition-colors flex items-center lg:hidden ml-4">
+          DATE <span id="sort-order-mobile" class="ml-1">↓</span>
+        </button>
       </div>
     </div>
 
     <!-- RIGHT SECTION: Post List -->
-    <div class="flex-1 px-2 lg:px-24 flex flex-col">
-      <!-- Sort Toggle -->
-      <div class="w-full flex justify-end mb-8">
+    <div class="flex-1 px-6 lg:px-24 flex flex-col">
+      <!-- Sort Toggle (데스크탑에서만 표시) -->
+      <div class="w-full hidden lg:flex justify-end mb-8">
         <button id="sort-toggle" class="text-neutral-300 font-aqua text-xs tracking-widest hover:text-neutral-500 transition-colors flex items-center">
           DATE <span id="sort-order" class="ml-2">↓</span>
         </button>
@@ -83,7 +90,7 @@ const classifications = [...new Set(posts.map(p => p.classification).filter(Bool
         {posts.map(post => (
           <a 
             href={`${import.meta.env.BASE_URL}posts/${post.slug}/`}
-            class="post-item group flex flex-col lg:flex-row lg:items-center py-4 lg:py-6 border-b border-neutral-50 hover:bg-neutral-50/50 transition-colors no-underline block"
+            class="post-item group flex flex-col lg:flex-row lg:items-center py-2 lg:py-6 border-b border-neutral-50 hover:bg-neutral-50/50 transition-colors no-underline block"
             data-title={post.title.toLowerCase()}
             data-class={post.classification || ""}
             data-date={post.publishedAt}
@@ -94,7 +101,7 @@ const classifications = [...new Set(posts.map(p => p.classification).filter(Bool
                 {new Date(post.publishedAt).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/. /g, '.').replace('.','')}
               </span>
               {post.classification && (
-                <span class="text-[11px] text-brand-800 font-nanumsquare tracking-widest uppercase font-bold">
+                <span class="text-[11px] text-sky-400 font-nanumsquare tracking-widest uppercase font-bold">
                   [{post.classification}]
                 </span>
               )}
@@ -235,9 +242,22 @@ const classifications = [...new Set(posts.map(p => p.classification).filter(Bool
     currentPage = 1; updateDisplay();
   });
 
-  sortBtn.addEventListener('click', () => {
+  // --- 데스크탑 정렬 버튼 ---
+  sortBtn?.addEventListener('click', () => {
     currentSort = currentSort === 'desc' ? 'asc' : 'desc';
-    sortOrderText.innerText = currentSort === 'desc' ? '↓' : '↑';
+    if (sortOrderText) sortOrderText.innerText = currentSort === 'desc' ? '↓' : '↑';
+    const mobileOrder = document.getElementById('sort-order-mobile');
+    if (mobileOrder) mobileOrder.innerText = currentSort === 'desc' ? '↓' : '↑';
+    updateDisplay();
+  });
+
+  // --- 모바일 정렬 버튼 ---
+  const sortBtnMobile = document.getElementById('sort-toggle-mobile');
+  sortBtnMobile?.addEventListener('click', () => {
+    currentSort = currentSort === 'desc' ? 'asc' : 'desc';
+    const mobileOrder = document.getElementById('sort-order-mobile');
+    if (mobileOrder) mobileOrder.innerText = currentSort === 'desc' ? '↓' : '↑';
+    if (sortOrderText) sortOrderText.innerText = currentSort === 'desc' ? '↓' : '↑';
     updateDisplay();
   });
 

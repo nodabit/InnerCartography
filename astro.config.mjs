@@ -4,6 +4,7 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 import sanity from '@sanity/astro';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
@@ -16,10 +17,13 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
-  integrations: [sanity({
-    projectId: 'hyht3xt0',
-    dataset: 'production',
-    apiVersion: '2024-03-09',
-    useCdn: false
-  })]
+  integrations: [
+    sanity({
+      projectId: 'hyht3xt0',
+      dataset: 'production',
+      apiVersion: '2024-03-09',
+      useCdn: false
+    }),
+    sitemap()
+  ]
 });

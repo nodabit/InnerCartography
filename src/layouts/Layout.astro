@@ -5,22 +5,73 @@ import ScrollToTop from '../components/ScrollToTop.astro';
 
 interface Props {
 	title: string;
+	description?: string;
 }
 
-const { title } = Astro.props;
+const { title, description } = Astro.props;
+
+/* ========== SEO 기본값 설정 ========== */
+const siteTitle = "Inner Cartography - 노다빗 블로그";
+const siteUrl = "https://nodabit.github.io/InnerCartography";
+const defaultDescription = description || "Inner Cartography: An Atlas of the Mind. 노다빗(Nodabit)의 개인 블로그 — 여행, 게임, 독서, 영화, 언어, 창작 등 다양한 이야기를 기록합니다.";
+const pageTitle = title === "Inner Cartography" ? siteTitle : `${title} | ${siteTitle}`;
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 ---
 
 <!doctype html>
 <html lang="ko">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="Inner Cartography: An Atlas of the Mind" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
 		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
 
-		<!-- Typography: Pretendard (가독성), Playfair Display (Serif/감성), Lato (Sans-serif/특수) -->
+		<!-- ========== SEO 기본 메타태그 ========== -->
+		<title>{pageTitle}</title>
+		<meta name="description" content={defaultDescription} />
+		<meta name="keywords" content="노다빗, nodabit, Inner Cartography, inner cartography, 블로그, 개인블로그, 여행, 게임, 독서, 영화, 언어, 창작, An Atlas of the Mind" />
+		<meta name="author" content="노다빗 (Nodabit)" />
+		<link rel="canonical" href={canonicalUrl} />
+
+		<!-- ========== Open Graph (SNS 공유 시 미리보기) ========== -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={defaultDescription} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:site_name" content="Inner Cartography" />
+		<meta property="og:locale" content="ko_KR" />
+		<meta property="og:image" content={`${siteUrl}/assets/images/main-visual.png`} />
+
+		<!-- ========== Twitter Card ========== -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={pageTitle} />
+		<meta name="twitter:description" content={defaultDescription} />
+		<meta name="twitter:image" content={`${siteUrl}/assets/images/main-visual.png`} />
+
+		<!-- ========== 추가 SEO 시그널 ========== -->
+		<meta name="google-site-verification" content="VU-91Xb0gyhI-XMSTqg7FIWlg6C-5D3LHsir8EjxY9c" />
+		<meta name="naver-site-verification" content="0c4d641bc011b6e91196fe8cc302552a0c4fb0c0" />
+		<meta name="robots" content="index, follow" />
+		<meta name="googlebot" content="index, follow" />
+		<link rel="sitemap" href={`${import.meta.env.BASE_URL}sitemap-index.xml`} />
+
+		<!-- ========== 구조화된 데이터 (JSON-LD) ========== -->
+		<script type="application/ld+json" set:html={JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "WebSite",
+			"name": "Inner Cartography",
+			"alternateName": ["노다빗", "Nodabit", "inner cartography"],
+			"url": siteUrl,
+			"description": "노다빗(Nodabit)의 개인 블로그. 여행, 게임, 독서, 영화, 언어, 창작 등 다양한 이야기를 기록합니다.",
+			"inLanguage": "ko",
+			"author": {
+				"@type": "Person",
+				"name": "노다빗",
+				"alternateName": "Nodabit"
+			}
+		})} />
+
+		<!-- ========== 웹폰트 ========== -->
 		<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
