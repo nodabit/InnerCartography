@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import { sanityClient } from "sanity:client";
 import { PortableText } from "astro-portabletext";
 import imageUrlBuilder from '@sanity/image-url';
+import PortableTextImage from '../../components/PortableTextImage.astro';
 
 export async function getStaticPaths() {
   const posts = await sanityClient.fetch(`*[_type == "post"] | order(publishedAt desc) {
@@ -55,29 +56,8 @@ const base = import.meta.env.BASE_URL;
 
 const components = {
   type: {
-    image: ({ node }) => {
-      const url = urlFor(node).url();
-      return {
-        component: 'div',
-        props: { class: 'my-12 lg:my-20 flex flex-col items-center' },
-        children: [
-          {
-            component: 'img',
-            props: {
-              src: url,
-              alt: node.alt || '',
-              class: 'max-w-full md:max-w-[65%] h-auto shadow-sm rounded-sm hover:scale-[1.02] transition-transform duration-500'
-            }
-          },
-          node.caption && {
-            component: 'p',
-            props: { class: 'text-[11px] text-neutral-400 mt-4 lg:mt-6 italic font-light font-nanumsquare max-w-xl text-center px-4 leading-relaxed' },
-            children: [node.caption]
-          }
-        ]
-      };
-    }
-  }
+    image: PortableTextImage,
+  },
 };
 ---
 
@@ -86,11 +66,11 @@ const components = {
     <!-- Main Visual Image (Banner Style) -->
     {post.mainImage && (
       <div class="w-full mb-12 lg:mb-20">
-        <div class="w-full max-h-[50vh] lg:max-h-[60vh] overflow-hidden grayscale-[0.2] hover:grayscale-0 transition-all duration-1000">
+        <div class="w-full max-h-[40vh] lg:max-h-[50vh] overflow-hidden grayscale-[0.2] hover:grayscale-0 transition-all duration-1000 shadow-sm border-b border-neutral-100">
           <img 
             src={post.mainImage} 
             alt={post.title} 
-            class="w-full h-full object-cover aspect-[21/9] lg:aspect-[25/9]"
+            class="w-full h-full object-cover aspect-[21/9] lg:aspect-[32/9]"
           />
         </div>
       </div>
