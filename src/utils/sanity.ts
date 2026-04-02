@@ -17,7 +17,11 @@ export async function getPostsByCategory(categoryTitle) {
   }`;
 
     const posts = await sanityClient.fetch(query, { categoryTitle });
-    return posts;
+    // Handiworks -> Handicrafts 자동 매핑
+    return posts.map(post => ({
+        ...post,
+        category: post.category === 'Handiworks' ? 'Handicrafts' : post.category
+    }));
 }
 
 export async function getSearchPosts(keyword) {
@@ -39,5 +43,9 @@ export async function getSearchPosts(keyword) {
   }`;
 
     const posts = await sanityClient.fetch(query, { keyword: `*${keyword}*` });
-    return posts;
+    // Handiworks -> Handicrafts 자동 매핑
+    return posts.map(post => ({
+        ...post,
+        category: post.category?.title === 'Handiworks' ? { ...post.category, title: 'Handicrafts' } : post.category
+    }));
 }

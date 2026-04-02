@@ -8,7 +8,7 @@ Inner Cartography is a heavily aesthetics-focused personal blog and archive ("An
 - **Goal:** To provide the author with a seamless, comfortable Markdown/Block-based writing environment while presenting the content to readers in a layout that feels like a premium, dynamic digital atlas.
 
 ## 3. Core Features
-- **Sidebar Navigation:** Expandable sidebar containing an index of all categories (`Journeys`, `Games`, `Books`, `Movies`, `Handiworks`, `Languages`, `Creations`, `Nodabit`, `Downloads`) and a search tool.
+- **Sidebar Navigation:** Expandable sidebar containing an index of all categories (`Journeys`, `Games`, `Books`, `Movies`, `Handicrafts`, `Languages`, `Creations`, `Nodabit`, `Downloads`) and a search tool.
 - **Search System:** Keyword search across all articles with Date ascending/descending sorting.
 - **Typography & Aesthetics:** 
   - Main Titles: Aqua Grotesque (Uppercase, subtle grayscale)

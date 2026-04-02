@@ -2,8 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import { sanityClient } from "sanity:client";
 
-const categoryName = "Handiworks";
-const query = `*[_type == "post" && category->title == "${categoryName}"] | order(publishedAt desc) {
+const categoryName = "Handicrafts";
+const query = `*[_type == "post" && (category->title == "Handicrafts" || category->title == "Handiworks")] | order(publishedAt desc) {
   title,
   classification,
   "slug": slug.current,

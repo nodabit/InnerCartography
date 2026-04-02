@@ -84,7 +84,7 @@ const components = {
         </span>
         <span class="w-1 h-1 rounded-full bg-neutral-200"></span>
         <span class="text-[12px] text-brand-800 font-nanumsquare font-bold tracking-widest uppercase">
-          {post.category}
+          {post.category === 'Handiworks' ? 'Handicrafts' : post.category}
         </span>
       </div>
 
@@ -144,10 +144,9 @@ const components = {
         </div>
       </div>
 
-      <!-- Back to List -->
       <div class="mt-20 flex justify-center">
         <a 
-          href={`${base}${post.category.toLowerCase()}/`} 
+          href={`${base}${post.category === 'Handiworks' ? 'handicrafts' : post.category.toLowerCase()}/`} 
           class="inline-block px-10 py-3 border border-neutral-100 text-[11px] font-aqua tracking-[0.3em] text-neutral-400 uppercase hover:border-brand-300 hover:text-brand-900 transition-all"
         >
           Back to Index

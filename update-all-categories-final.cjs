@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const pagesDir = path.join(__dirname, 'src', 'pages');
-const categories = ['books', 'creations', 'downloads', 'games', 'handiworks', 'journeys', 'languages', 'movies'];
+const categories = ['books', 'creations', 'downloads', 'games', 'handicrafts', 'journeys', 'languages', 'movies'];
 
 categories.forEach(cat => {
     const filePath = path.join(pagesDir, `${cat}.astro`);

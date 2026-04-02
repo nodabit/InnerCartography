@@ -139,7 +139,7 @@ const base = import.meta.env.BASE_URL;
             ${new Date(post.publishedAt).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/. /g, '.').replace('.','')}
           </span>
           <span class="text-[11px] text-brand-800 font-nanumsquare tracking-widest uppercase font-bold">
-            ${post.category}
+            ${post.category === 'Handiworks' ? 'Handicrafts' : post.category}
           </span>
         </div>
         <div class="flex-1">
